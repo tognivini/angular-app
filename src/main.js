@@ -36,7 +36,7 @@ async function getUsers() {
 }
 
 async function createUser(event) {
-    event.preventDefault()
+    // event.preventDefault()
     const payload = {
       email: "user",
       phoneNumber: "99999",
@@ -47,7 +47,7 @@ async function createUser(event) {
 }
 
 async function updateUser(event) {
-    event.preventDefault()
+    // event.preventDefault()
     userList.map( async (user) => {
         const userId = user.id
         const payload = {
@@ -57,16 +57,42 @@ async function updateUser(event) {
         }
         await axios.put(`http://localhost:3333/api/user/update/${userId}`, payload)
     })
-    setTimeout(getUsers, 500);
+    setTimeout(getUsers, 300);
 }
 
 async function deleteUser(event) {
-    event.preventDefault()
+    // event.preventDefault()
     userList.map( async (user) => {
         const userId = user.id
         await axios.delete(`http://localhost:3333/api/user/delete/${userId}`);
     })
-    setTimeout(getUsers, 500);
+    setTimeout(getUsers, 300);
 }
-    
-getUsers()
+ 
+async function getFunctionRoute() {
+    const loc = document.location;
+    switch (loc.href) {
+        case 'http://localhost:4200/':
+            await getUsers()
+        break;
+
+        case 'http://localhost:4200/create':
+            await createUser()
+        break;
+
+        case 'http://localhost:4200/edit':
+            await getUsers().then(()=> updateUser())
+        break;
+
+        case 'http://localhost:4200/delete':
+            await getUsers().then(()=> deleteUser())
+        break;
+        
+        default:
+            await getUsers()
+    }
+}
+
+getFunctionRoute()
+
+
